@@ -8,8 +8,11 @@
 #define COLUNA_2	23
 #define COLUNA_3	47
 #define BUZZER		27
-#define LED_R		22
-#define LED_G		37
+#define LED_R		69
+#define LED_G		68
 
 int read_keyboard();
 void init_keyboard();
+void wrong_passw_sign();
+void correct_passw_sign();
+void task_keyboard();

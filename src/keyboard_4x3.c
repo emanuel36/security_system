@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include "functions.h"
 #include "keyboard_4x3.h"
@@ -15,6 +16,7 @@ void init_keyboard(){
 	init_gpio(LED_R, OUTPUT);
 	init_gpio(LED_G, OUTPUT);
 	set_gpio_high(LED_R);
+	set_gpio_low(LED_G);
 }
 
 int read_keyboard(){
@@ -108,12 +110,45 @@ int read_keyboard(){
 	return numero;
 }
 
-int main(){
-	int senha_digitada = 0, contador = 0, numero, senha = 360601;
+void wrong_passw_sign(){
+	set_gpio_low(LED_R);
+	usleep(100000);
+
+	set_gpio_high(BUZZER);
+	set_gpio_high(LED_R);
+	usleep(200000);
+	set_gpio_low(LED_R);
+	set_gpio_low(BUZZER);
+	usleep(200000);
+
+	set_gpio_high(BUZZER);
+	set_gpio_high(LED_R);
+	usleep(200000);
+	set_gpio_low(LED_R);
+	set_gpio_low(BUZZER);
+	usleep(200000);
+
+	set_gpio_high(BUZZER);
+	set_gpio_high(LED_R);
+	usleep(200000);
+	set_gpio_low(BUZZER);
+}
+
+void correct_passw_sign(){
+	set_gpio_low(LED_R);
+
+	set_gpio_high(LED_G);
+	set_gpio_high(BUZZER);
+	usleep(700000);
+	set_gpio_low(BUZZER);
+}
+
+void task_keyboard(){
+	int  i, senha_digitada = 0, numero, senha = 360601;
 	init_keyboard();
 
 
-	while(contador < 6){	
+	for(i = 0; i < 6; i++){	
 		leitura:
 		numero = read_keyboard();
 		if(numero == 10){
@@ -121,29 +156,23 @@ int main(){
 		} 
 		else if(numero < 0){
 			printf("Erro!\n");
-			break;	
+			wrong_passw_sign();
+			exit(1);
 		}else{
 			set_gpio_high(BUZZER);
-			usleep(3000);
+			usleep(30000);
 			set_gpio_low(BUZZER);
 			senha_digitada *= 10;
 			senha_digitada += numero;
-			usleep(500000);
-		} 
-		contador++;
+			usleep(500000);				
+		}
 	}
 	if(senha_digitada == senha){
-		set_gpio_low(LED_R);
-		set_gpio_high(LED_G);
+		correct_passw_sign();
 	}else{
-		blink(LED_R);
-		blink(BUZZER);
-		blink(LED_R);
-		blink(BUZZER);
-		blink(LED_R);
-		blink(BUZZER);
+		wrong_passw_sign();
 		senha_digitada = 0;
-		contador = 0;
+		i = 0;
 		goto leitura;
 	}	
 }
