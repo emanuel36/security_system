@@ -2,7 +2,7 @@ CC = arm-linux-gnueabihf-gcc
 
 all:
 	mkdir -p APP
-	$(CC) -I./inc src/*.c -o APP/app.bin
+	$(CC) -I./inc src/*.c -o APP/app.bin -lpthread
 	scp APP/app.bin root@192.168.7.2:/
 clean:
 	rm -rf APP

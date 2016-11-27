@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include "functions.h"
 #include "keyboard_4x3.h"
@@ -12,11 +11,15 @@ void init_keyboard(){
 	init_gpio(COLUNA_1, OUTPUT);
 	init_gpio(COLUNA_2, OUTPUT);
 	init_gpio(COLUNA_3, OUTPUT);
-	init_gpio(BUZZER, OUTPUT);
+	init_gpio(BUZZER_K, OUTPUT);
 	init_gpio(LED_R, OUTPUT);
 	init_gpio(LED_G, OUTPUT);
+	init_gpio(BIT_0, OUTPUT);
+	init_gpio(BIT_1, OUTPUT);
+	init_gpio(BIT_2, OUTPUT);
+	init_gpio(BIT_3, OUTPUT);
+	init_gpio(BL, OUTPUT);
 	set_gpio_high(LED_R);
-	set_gpio_low(LED_G);
 }
 
 int read_keyboard(){
@@ -114,65 +117,76 @@ void wrong_passw_sign(){
 	set_gpio_low(LED_R);
 	usleep(100000);
 
-	set_gpio_high(BUZZER);
+	set_gpio_high(BUZZER_K);
 	set_gpio_high(LED_R);
 	usleep(200000);
 	set_gpio_low(LED_R);
-	set_gpio_low(BUZZER);
+	set_gpio_low(BUZZER_K);
 	usleep(200000);
 
-	set_gpio_high(BUZZER);
+	set_gpio_high(BUZZER_K);
 	set_gpio_high(LED_R);
 	usleep(200000);
 	set_gpio_low(LED_R);
-	set_gpio_low(BUZZER);
+	set_gpio_low(BUZZER_K);
 	usleep(200000);
 
-	set_gpio_high(BUZZER);
+	set_gpio_high(BUZZER_K);
 	set_gpio_high(LED_R);
 	usleep(200000);
-	set_gpio_low(BUZZER);
+	set_gpio_low(BUZZER_K);
 }
 
 void correct_passw_sign(){
 	set_gpio_low(LED_R);
-
 	set_gpio_high(LED_G);
-	set_gpio_high(BUZZER);
+	set_gpio_high(BUZZER_K);
 	usleep(700000);
-	set_gpio_low(BUZZER);
+	set_gpio_low(BUZZER_K);
 }
 
-void task_keyboard(){
-	int  i, senha_digitada = 0, numero, senha = 360601;
-	init_keyboard();
+void count_display(){
+	int numero = 9;
+	set_gpio_high(BL);
+	while(numero >= 0){
+		if(numero & 0x1)	set_gpio_high(BIT_0);
+		else				set_gpio_low(BIT_0);
 
+		if(numero & 0x2)	set_gpio_high(BIT_1);
+		else				set_gpio_low(BIT_1);
 
-	for(i = 0; i < 6; i++){	
-		leitura:
-		numero = read_keyboard();
-		if(numero == 10){
-			goto leitura;	
-		} 
-		else if(numero < 0){
-			printf("Erro!\n");
-			wrong_passw_sign();
-			exit(1);
-		}else{
-			set_gpio_high(BUZZER);
-			usleep(30000);
-			set_gpio_low(BUZZER);
-			senha_digitada *= 10;
-			senha_digitada += numero;
-			usleep(500000);				
-		}
+		if(numero & 0x4)	set_gpio_high(BIT_2);
+		else				set_gpio_low(BIT_2);
+
+		if(numero & 0x8)	set_gpio_high(BIT_3);
+		else				set_gpio_low(BIT_3);
+
+		numero--;
+		sleep(1);
+
+		set_gpio_high(BUZZER_K);
+		usleep(15000);
+		set_gpio_low(BUZZER_K);
 	}
-	if(senha_digitada == senha){
-		correct_passw_sign();
-	}else{
-		wrong_passw_sign();
-		senha_digitada = 0;
-		i = 0;
-		goto leitura;
-	}	
+	set_gpio_high(BUZZER_K);
+	usleep(500000);
+	set_gpio_low(BUZZER_K);
+	set_gpio_low(BL);
+	set_gpio_high(LED_R);
+	set_gpio_low(LED_G);
+}
+
+void show_number(int number){
+	set_gpio_high(BL);
+	if(number & 0x1)	set_gpio_high(BIT_0);
+	else				set_gpio_low(BIT_0);
+
+	if(number & 0x2)	set_gpio_high(BIT_1);
+	else				set_gpio_low(BIT_1);
+
+	if(number & 0x4)	set_gpio_high(BIT_2);
+	else				set_gpio_low(BIT_2);
+
+	if(number & 0x8)	set_gpio_high(BIT_3);
+	else				set_gpio_low(BIT_3);
 }
