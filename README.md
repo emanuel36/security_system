@@ -1,3 +1,30 @@
-# security_system
+# Project Name
+Security System 
 
-Security System using Beaglebone, IR Sensor, Keyboard  4x3, LEDs, Buzzer, BCD Decoder and 7 Segments Display.
+# Overview
+This system was implemented in the Programming discipline for embedded systems, where I used U-boot, Debian and the generated filesystem and compiler for me. The final grade of the project was 10.
+
+## Demostration
+https://www.youtube.com/watch?v=UH1cHfweTjo
+
+## Platform
+Beaglebone
+
+## Architecture
+Debian 32 bits (Embedded Linux)
+
+## Compilation
+- make
+- note: The makefile is programmed to compile on the pc (x86) and send the binary to the linux root directory.
+
+## Usage
+- Connect the components according to the mapping of the GPIOs that are in the headers (.h) files.
+- Run the binary (teste.bin)
+
+## Components
+- Sensor IR
+- LEDs
+- Buzzers
+- Keyboard 4x3
+- BCD 7 segments decoder
+- Display 7 segments
