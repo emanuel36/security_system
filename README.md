@@ -19,7 +19,7 @@ Debian 32 bits (Embedded Linux)
 
 ## Usage
 - Connect the components according to the mapping of the GPIOs that are in the headers (.h) files.
-- Run the binary (teste.bin)
+- Run the binary (app.bin)
 
 ## Components
 - Sensor IR
